@@ -147,7 +147,6 @@ init();
 
 /*Request new items or remove button*/
 loadButton.addEventListener("click", () => {
-  debugger
   offset += limit;
   const qtdRecordsNewPage = offset + limit;
   if (qtdRecordsNewPage >= maxRecords) {
