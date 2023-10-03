@@ -10,7 +10,7 @@ const generationForm = document.getElementById("generationForm");
 const paginationDropdown = document.getElementById("paginationDropdown");
 const modalConfigSaveButton = document.getElementById("modalConfigSaveButton");
 const errorApi = document.getElementById("errorApi");
-let limit = 10;
+let limit = 5;
 let maxRecords = 151;
 let offset = 0;
 
@@ -147,6 +147,7 @@ init();
 
 /*Request new items or remove button*/
 loadButton.addEventListener("click", () => {
+  debugger
   offset += limit;
   const qtdRecordsNewPage = offset + limit;
   if (qtdRecordsNewPage >= maxRecords) {
@@ -257,12 +258,13 @@ generationForm.addEventListener("change", () => {
 /* Save Change to Items per page Setting */
 paginationDropdown.addEventListener("change", () => {
   var newLimit = paginationDropdown.value;
-  limit = newLimit;
+  limit = Number(newLimit);
 });
 
 /* Close Configuration Modal and restar Html Pokemons List*/
 modalConfigSaveButton.addEventListener("click", () => {
-  loadPokemonItems(0, limit, true);
+  offset = 0;
+  loadPokemonItems(offset, limit, true);
   configModal.style.display = "none";
   disableContent(false);
 });
@@ -270,7 +272,8 @@ modalConfigSaveButton.addEventListener("click", () => {
 /* Close Configuration Modal and restar Html Pokemons List*/
 configModal.addEventListener("click", (event) => {
   if (event.target === configModal) {
-    loadPokemonItems(0, limit, true);
+    offset = 0;
+    loadPokemonItems(offset, limit, true);
     configModal.style.display = "none";
     disableContent(false);
   }
