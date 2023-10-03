@@ -62,6 +62,7 @@ header .config-button {
   justify-content: center;
   bottom: 10px;
   right: 20px;
+  cursor: pointer;
 }
 
 header .config-button .icon {
