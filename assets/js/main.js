@@ -59,6 +59,7 @@ function init() {
   configModal.style.display = "none";
   errorApi.parentElement.removeChild(errorApi);
   loadPokemonItems(offset, limit);
+  createModalConfig();
 }
 
 /* Disable Page If Modal Or Loading Active */
@@ -226,7 +227,6 @@ pokemonDetailPage.addEventListener("click", (event) => {
 
 /* Open Configuration Modal */
 configButton.addEventListener("click", () => {
-  createModalConfig();
   configModal.style.display = "flex";
   disableContent(true);
 });

@@ -139,6 +139,10 @@
   color: white;
   border-radius: 1rem;
   cursor: pointer;
+  background-image: url('./../img/pokeball-list.png');
+  background-size: 60%; 
+  background-position: right bottom; 
+  background-repeat: no-repeat; 
 }
 
 .pokemon .pokemon-number {
@@ -199,6 +203,10 @@
   max-width: 520px;
   text-align: center;
   border-radius: 1rem;
+  background-image: url('./../img/pokeball-detail-page.png');
+  background-size: 100%; 
+  background-position: center; 
+  background-repeat: no-repeat;
 }
 
 .pokemon-detail-page .pokemon-img img {
