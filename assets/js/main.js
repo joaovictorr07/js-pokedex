@@ -9,8 +9,9 @@ const configModal = document.getElementById("configModal");
 const generationForm = document.getElementById("generationForm");
 const paginationDropdown = document.getElementById("paginationDropdown");
 const modalConfigSaveButton = document.getElementById("modalConfigSaveButton");
-let limit = 5;
-let maxRecords = 5;
+const errorApi = document.getElementById("errorApi");
+let limit = 10;
+let maxRecords = 151;
 let offset = 0;
 
 const modalGenerationsOptions = [
@@ -56,6 +57,7 @@ function init() {
   pokemonDetailPage.parentElement.removeChild(pokemonDetailPage);
   noLoadMore.parentElement.removeChild(noLoadMore);
   configModal.style.display = "none";
+  errorApi.parentElement.removeChild(errorApi);
   loadPokemonItems(offset, limit);
 }
 
@@ -64,7 +66,6 @@ function disableContent(disabled) {
   if (disabled) content.style.pointerEvents = "none";
   else content.style.pointerEvents = "auto";
 }
-
 
 /* Loading Element */
 function setLoading(loading) {
@@ -80,11 +81,13 @@ function setLoading(loading) {
 /* Load Pokemons Itens and Update Html List*/
 function loadPokemonItems(offset, limit, restart = false) {
   setLoading(true);
-  pokeApi.getPokemons(offset, limit).then((pokemonList = []) => {
-    if(restart) {
-      pokemonOl.innerHTML = pokemonList
-      .map(
-        (pokemon) => `
+  pokeApi
+    .getPokemons(offset, limit)
+    .then((pokemonList = []) => {
+      if (restart) {
+        pokemonOl.innerHTML = pokemonList
+          .map(
+            (pokemon) => `
     <li data-pokemon-id="${pokemon.pokeId}" class="pokemon ${pokemon.mainType}">
     <span class="pokemon-number">#${pokemon.pokeId}</span>
     <span class="pokemon-name">${pokemon.name}</span>
@@ -98,12 +101,12 @@ function loadPokemonItems(offset, limit, restart = false) {
     </div>
 </li>
     `
-      )
-      .join("");
-    } else {
-      pokemonOl.innerHTML += pokemonList
-        .map(
-          (pokemon) => `
+          )
+          .join("");
+      } else {
+        pokemonOl.innerHTML += pokemonList
+          .map(
+            (pokemon) => `
       <li data-pokemon-id="${pokemon.pokeId}" class="pokemon ${pokemon.mainType}">
       <span class="pokemon-number">#${pokemon.pokeId}</span>
       <span class="pokemon-name">${pokemon.name}</span>
@@ -117,11 +120,16 @@ function loadPokemonItems(offset, limit, restart = false) {
       </div>
   </li>
       `
-        )
-        .join("");
-    }
-    setLoading(false);
-  });
+          )
+          .join("");
+      }
+      setLoading(false);
+    })
+    .catch((err) => {
+      setLoading(false);
+      console.log(err);
+      loadButton.parentElement.replaceChild(errorApi, loadButton);
+    });
 }
 
 /* Initialize Configuration Modal */
@@ -136,7 +144,6 @@ function createModalConfig() {
 }
 
 init();
-
 
 /*Request new items or remove button*/
 loadButton.addEventListener("click", () => {
@@ -158,10 +165,8 @@ pokemonOl.addEventListener("click", function (event) {
   const pokemonItem = event.target.closest("li[data-pokemon-id]");
   if (pokemonItem) {
     const pokemonId = pokemonItem.getAttribute("data-pokemon-id");
-    console.log("Clicou no item da lista com ID:", pokemonId);
     setLoading(true);
     pokeApi.getPokemonDetailByID(pokemonId).then((pokemon) => {
-      console.log(pokemon.details.baseStats);
       pokemonDetailPage.innerHTML = `
         <h2 class="pokemon-name">#${pokemon.pokeId} ${pokemon.name}</h2>
         <div class="pokemon-img ${pokemon.mainType}">
@@ -210,12 +215,9 @@ pokemonOl.addEventListener("click", function (event) {
   }
 });
 
-
 /* Close Pokemon Details */
 pokemonDetailPage.addEventListener("click", (event) => {
   if (event.target.classList.contains("pokedex-button")) {
-    console.log("Clicou no botão Back");
-
     pokemonDetailPage.parentElement.replaceChild(pokemonOl, pokemonDetailPage);
     loadButton.style.display = "block";
     noLoadMore.style.display = "block";
@@ -244,7 +246,6 @@ generationForm.addEventListener("change", () => {
   if (selectedValues.length > 0) {
     max = Math.max(...selectedValues);
   }
-  console.log(max);
   checkBoxes.forEach((checkBox) => {
     if (checkBox.value <= max) {
       checkBox.checked = true;
@@ -256,13 +257,12 @@ generationForm.addEventListener("change", () => {
 /* Save Change to Items per page Setting */
 paginationDropdown.addEventListener("change", () => {
   var newLimit = paginationDropdown.value;
-  console.log(newLimit);
   limit = newLimit;
 });
 
 /* Close Configuration Modal and restar Html Pokemons List*/
 modalConfigSaveButton.addEventListener("click", () => {
-  loadPokemonItems(o, limit, true);
+  loadPokemonItems(0, limit, true);
   configModal.style.display = "none";
   disableContent(false);
 });
@@ -270,7 +270,7 @@ modalConfigSaveButton.addEventListener("click", () => {
 /* Close Configuration Modal and restar Html Pokemons List*/
 configModal.addEventListener("click", (event) => {
   if (event.target === configModal) {
-    loadPokemonItems(o, limit, true);
+    loadPokemonItems(0, limit, true);
     configModal.style.display = "none";
     disableContent(false);
   }

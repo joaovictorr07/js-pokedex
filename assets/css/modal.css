@@ -19,7 +19,7 @@
     vertical-align: middle;
     background-color: #fff;
     width: 80vw;
-    height: 25vh;
+    height: 30vh;
     border-radius: 1rem;
   }
   
@@ -46,13 +46,13 @@
 
   @media screen and (min-width: 320px) {
     .modal-content {
-        height: 25vh;
+        height: 27vh;
       }
   }
 
   @media screen and (min-width: 768px) {
     .modal-content {
         width: 40vw;
-        height: 20vh;
+        height: 25vh;
       }
   }

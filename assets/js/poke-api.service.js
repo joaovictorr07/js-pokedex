@@ -1,5 +1,4 @@
 const pokeApi = {};
-
 /*Convert PokeApi Details to pokedex details model*/
 function convertPokemonApiDetailsToPokemonModelDetails(pokemonDetail) {
   const details = {
@@ -88,6 +87,6 @@ pokeApi.getPokemons = async (offset = 0, limit = 5) => {
     const pokemonDetails = await Promise.all(detailsRequests);
     return pokemonDetails;
   } catch (err) {
-    console.log(err);
+    return err;
   }
 };
